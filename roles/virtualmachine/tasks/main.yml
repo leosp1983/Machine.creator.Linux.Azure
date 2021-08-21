@@ -1,0 +1,10 @@
+- azure_rm_virtualmachine:
+    resource_group: "{{resourcegroup}}"
+    name: "{{hostname | upper}}"
+    vm_size: Standard_B2s
+    admin_username: "{{localuser}}"
+    admin_password: "{{lacalpass}}"
+    network_interfaces: "{{hostname}}-eth0"
+    public_ip_allocation: Disabled
+    os_type: Linux
+    image: "{{so}}"

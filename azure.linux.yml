@@ -1,0 +1,49 @@
+---
+- hosts: localhost
+  gather_facts: yes
+  environment:
+    http_proxy: http://youproxy:port
+    https_proxy: https://youproxy:port
+
+  tasks:
+
+  - debug:
+      msg: "{{ subscription | regex_replace('(([a-zA-Z].*))_')}}"
+    register: subscription_id
+
+  - shell: Select-AzSubscription -Subscription "{{subscription_id.msg}}"
+    args:
+      executable: /usr/bin/pwsh
+    vars:
+      ansible_connection: ssh
+      ansible_host: "{{host}}"
+      ansible_user: "{{user}}"
+      ansible_password: "{{pass}}"
+
+  - name: Create a network interface
+    include_role:
+      name: networkinterface
+
+  - name: Create VM
+    include_role:
+      name: virtualmachine
+
+  - name: Adicionado o {{hostname}} ao inventory
+    include_role:
+      name: inventory
+
+- hosts: linux
+  gather_facts: yes
+  vars:
+    ansible_user: "{{user}}"
+    ansible_password: "{{pass}}"
+
+  tasks:
+
+  - name: Instalando updates
+    include_role:
+      name: updates
+
+  - name: Instalação de Ferramentas RedHat
+    include_role:
+      name: tools_rhel

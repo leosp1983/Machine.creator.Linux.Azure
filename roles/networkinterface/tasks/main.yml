@@ -1,0 +1,46 @@
+- debug:
+    msg: "{{ virtualnetwork | regex_replace('-((?:[0-9].*))')}}"
+  register: vnet
+  no_log: true
+
+- debug:
+    msg: "{{ subnetname | regex_replace('-((?:[0-9].*))')}}"
+  register: snet
+  no_log: true
+
+- azure_rm_networkinterface:
+    name: "{{hostname}}-eth0"
+    resource_group: "{{resourcegroupvnet}}"
+    virtual_network: "{{vnet.msg}}" 
+    subnet_name: "{{snet.msg}}"
+    create_with_security_group: False
+    ip_configurations:
+      - name: "{{hostname}}-eth0"
+        primary: True
+
+- template: 
+    src: changerg.ps1.j2
+    dest: /opt/scripts/infra/changerg.ps1
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{host}}"
+    ansible_user: "{{user}}"
+    ansible_password: "{{pass}}"
+
+- template: 
+    src: privateipmethod.ps1.j2
+    dest: /opt/scripts/infra/privateipmethod.ps1
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{host}}"
+    ansible_user: "{{user}}"
+    ansible_password: "{{pass}}"
+
+- shell: /opt/scripts/infra/changerg.ps1 && /opt/scripts/infra/privateipmethod.ps1
+  args:
+    executable: /usr/bin/pwsh
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{host}}"
+    ansible_user: "{{user}}"
+    ansible_password: "{{pass}}"

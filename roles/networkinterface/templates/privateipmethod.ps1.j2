@@ -1,0 +1,3 @@
+$Nic = Get-AzNetworkInterface -ResourceGroupName "{{resourcegroup}}" -Name "{{hostname}}-eth0"
+$Nic.IpConfigurations[0].PrivateIpAllocationMethod = "Static"
+Set-AzNetworkInterface -NetworkInterface $Nic

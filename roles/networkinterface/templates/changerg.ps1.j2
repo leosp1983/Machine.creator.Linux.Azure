@@ -1,0 +1,3 @@
+$resource = Get-AzResource -Name "{{hostname}}-eth0" -ResourceGroupName "{{resourcegroupvnet}}"
+
+Move-AzResource -DestinationResourceGroupName "{{resourcegroup}}" -ResourceId $resource.id -Force

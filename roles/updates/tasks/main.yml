@@ -1,0 +1,24 @@
+- name: install updates using yum
+  yum:
+    name: "*"
+    state: latest
+
+- shell: needs-restarting -r
+  failed_when: false
+  register: reboot_required
+  changed_when: false
+
+- when: reboot_required.rc != 0
+  block:
+    - name: reboot the server if required
+      shell: sleep 3; reboot
+      ignore_errors: true
+      changed_when: false
+      async: 1
+      poll: 0
+    - wait_for_connection:
+        timeout: 600
+        delay: 20
+      register: reboot_result
+    - debug:
+        msg: "The system rebooted in {{ reboot_result.elapsed }} seconds."

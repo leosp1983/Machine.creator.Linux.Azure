@@ -1,0 +1,12 @@
+- azure_rm_networkinterface_info:
+    resource_group: "{{resourcegroup}}"
+    name: "{{hostname}}-eth0"
+  register: facts
+
+- debug:
+    msg: "{{facts | json_query('networkinterfaces[*].ip_configurations[*].private_ip_address')}}"
+  register: ip
+
+- add_host:
+    name: "{{ip.msg[0][0]}}"
+    groups: linux

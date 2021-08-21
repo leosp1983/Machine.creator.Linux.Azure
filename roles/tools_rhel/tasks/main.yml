@@ -1,0 +1,12 @@
+- yum:
+    name:
+      - htop
+      - sysstat
+      - telnet
+      - net-snmp
+      - java
+      - perl
+      - chrony
+      - unzip
+      - yum-utils
+  when: ansible_facts['distribution'] == "RedHat"
