@@ -12,3 +12,5 @@
 - [X] Cria Networkinterface;
 - [x] Provisiona uma VM a partir de um template;
 - [x] Realiza a instalação de tools/packages para a gestão do S.O;
+
+=======================================================================
